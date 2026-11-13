@@ -25,7 +25,7 @@
     "etiqueta": "nuevo",
     "agotado": false,
     "domicilio_gratis": true,
-    "regalo_navideno": true,
+    "regalo_navideno": false,
     "imagen": "imagen/combo-pareja.jpg",
     "fecha_agregado": "2026-11-11"
   },
@@ -39,11 +39,11 @@
     "etiqueta": "nuevo",
     "agotado": false,
     "domicilio_gratis": true,
-    "regalo_navideno": true,
+    "regalo_navideno": false,
     "imagen": "imagen/combo-especial.jpg",
-    "fecha_agregado": "2026-11-11",
     "precio_original": "35",
-    "fecha_rebaja": "2026-11-12"
+    "fecha_rebaja": "2026-11-12",
+    "fecha_agregado": "2026-11-11"
   },
   {
     "id": "p_1763000000003",
@@ -83,10 +83,10 @@
     "etiqueta": "mas_vendido",
     "agotado": false,
     "domicilio_gratis": true,
-    "regalo_navideno": true,
+    "regalo_navideno": false,
     "imagen": "imagen/combo-postres.jpg",
-    "fecha_agregado": "2026-11-11",
     "precio_original": "10",
-    "fecha_rebaja": "2026-11-12"
+    "fecha_rebaja": "2026-11-12",
+    "fecha_agregado": "2026-11-11"
   }
 ]
