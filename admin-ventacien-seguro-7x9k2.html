@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · VENTACIEN</title>
+<style>
+:root{
+  --azul:#14532d;--azul2:#2a5080;--dorado:#c8922a;
+  --crema:#fdfaf4;--crema2:#f5efe4;--linea:#e0d5c0;
+  --texto:#1e2d1e;--suave:#6b6050;--rojo:#c0392b;--verde:#1a8a4a;--radio:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--crema);color:var(--texto);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh;font-size:15px;}
+button{cursor:pointer;font-family:inherit;}
+
+.hdr{background:var(--azul);color:#fff;padding:0 16px;}
+.hdr-in{max-width:640px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.badge{width:36px;height:36px;border-radius:50%;background:var(--dorado);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;}
+.hdr-titulo{font-weight:700;font-size:15px;margin-left:10px;flex:1;}
+.hdr-link{background:transparent;border:1.5px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.85);padding:6px 12px;border-radius:20px;font-size:12px;text-decoration:none;}
+
+.wrap{max-width:640px;margin:0 auto;padding:20px 14px 80px;}
+
+.login-bg{min-height:80vh;display:flex;align-items:center;justify-content:center;}
+.login-card{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:32px 24px;max-width:360px;width:100%;text-align:center;box-shadow:0 4px 20px rgba(26,58,92,0.1);}
+.login-ico{font-size:38px;margin-bottom:10px;}
+.login-h{font-size:20px;font-weight:800;color:var(--azul);margin-bottom:6px;}
+.login-p{font-size:13px;color:var(--suave);margin-bottom:22px;line-height:1.5;}
+
+.pass-wrap{position:relative;margin-bottom:10px;}
+.pass-wrap .input{margin-bottom:0;padding-right:44px;}
+.toggle-pass{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:transparent;border:none;font-size:18px;padding:6px 10px;border-radius:6px;color:var(--suave);}
+.toggle-pass:hover{background:var(--crema2);}
+
+.input{width:100%;border:1.5px solid var(--linea);border-radius:8px;padding:12px 14px;font-size:14px;font-family:inherit;background:#fff;transition:border-color .2s;margin-bottom:10px;}
+.input:focus{outline:none;border-color:var(--azul);}
+.err{color:var(--rojo);font-size:12px;min-height:16px;margin-bottom:8px;line-height:1.4;}
+.btn{width:100%;border:none;padding:13px;border-radius:8px;font-size:14px;font-weight:700;transition:background .2s;}
+.btn-azul{background:var(--azul);color:#fff;}
+.btn-azul:hover{background:var(--azul2);}
+.btn-dorado{background:var(--dorado);color:#fff;}
+.btn-verde{background:var(--verde);color:#fff;}
+.btn-verde:hover{background:#0f6a37;}
+.btn-outline{background:transparent;border:1.5px solid var(--linea);color:var(--suave);width:100%;padding:12px;border-radius:8px;font-size:14px;font-weight:600;}
+
+#panel,#form-producto{display:none;}
+.aviso{background:rgba(200,146,42,.1);border:1.5px solid rgba(200,146,42,.35);border-radius:8px;padding:12px 14px;font-size:12.5px;line-height:1.65;color:#5c4a14;margin-bottom:16px;}
+.aviso code{background:rgba(200,146,42,.2);padding:1px 5px;border-radius:3px;font-weight:700;}
+.aviso strong{color:var(--rojo);}
+.acciones-top{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.acciones-github{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#fff;border:1px solid var(--linea);border-radius:10px;padding:12px;margin-bottom:16px;}
+.acciones-github input{flex:1;min-width:140px;border:1.5px solid var(--linea);border-radius:6px;padding:8px 10px;font-size:13px;}
+.acciones-github .btn{width:auto;padding:8px 18px;}
+
+/* ===== PANEL TASAS DE CAMBIO ===== */
+.tasas-panel{background:#fff;border:1.5px solid var(--dorado);border-radius:10px;padding:14px;margin-bottom:16px;}
+.tasas-titulo{font-size:13px;font-weight:800;color:var(--azul);margin-bottom:10px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.04em;}
+.tasas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:10px;}
+.tasa-item{display:flex;flex-direction:column;gap:3px;}
+.tasa-item label{font-size:10.5px;font-weight:700;color:var(--suave);text-transform:uppercase;letter-spacing:.04em;}
+.tasa-item input{border:1.5px solid var(--linea);border-radius:6px;padding:7px 9px;font-size:14px;font-family:inherit;font-weight:700;color:var(--azul);background:#fff;width:100%;}
+.tasa-item input:focus{outline:none;border-color:var(--azul);}
+.tasa-item input[readonly]{background:var(--crema2);color:var(--suave);cursor:not-allowed;}
+.tasas-btns{display:flex;flex-wrap:wrap;gap:8px;}
+.tasas-btns .btn{width:auto;padding:8px 14px;font-size:12px;}
+.tasas-help{font-size:11px;color:var(--suave);margin-top:8px;line-height:1.5;}
+
+.cat-select{width:100%;border:1.5px solid var(--linea);border-radius:8px;padding:10px 12px;font-size:13.5px;font-family:inherit;background:#fff;color:var(--texto);margin-bottom:16px;}
+.buscador-admin{width:100%;border:1.5px solid var(--linea);border-radius:8px;padding:10px 12px;font-size:13.5px;font-family:inherit;background:#fff;color:var(--texto);margin-bottom:12px;}
+.buscador-admin:focus{outline:none;border-color:var(--azul);}
+.resultado-contador{font-size:12px;color:var(--suave);margin-bottom:10px;display:block;}
+
+.lista{display:flex;flex-direction:column;gap:10px;}
+.item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--linea);border-radius:10px;padding:12px;box-shadow:0 1px 4px rgba(26,58,92,.06);}
+.item.rebajado{border-color:#e6391a;box-shadow:0 1px 6px rgba(230,57,26,.15);}
+.item-img{width:60px;height:60px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--crema2);}
+.item-img-ph{width:60px;height:60px;border-radius:8px;flex-shrink:0;background:var(--crema2);display:flex;align-items:center;justify-content:center;font-size:22px;opacity:.4;}
+.item-info{flex:1;min-width:0;}
+.item-cat{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--dorado);margin-bottom:2px;}
+.item-nombre{font-size:14px;font-weight:700;color:var(--azul);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.item-precio{font-size:12.5px;color:var(--dorado);margin-top:2px;}
+.item-precio .precio-orig{color:#999;text-decoration:line-through;margin-left:4px;font-weight:400;font-size:11.5px;}
+.item-precio .precio-off{background:#fdecec;color:#c0392b;font-weight:800;font-size:10.5px;padding:1px 5px;border-radius:3px;margin-left:4px;}
+.item-btns{display:flex;gap:6px;flex-shrink:0;}
+.btn-sm{border:1.5px solid var(--linea);background:transparent;color:var(--texto);font-size:12px;padding:6px 10px;border-radius:6px;font-family:inherit;}
+.btn-del{border:1.5px solid var(--rojo);background:transparent;color:var(--rojo);width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.btn-stock{border:1.5px solid var(--suave);background:transparent;color:var(--suave);width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.btn-stock.activo{border-color:var(--rojo);background:var(--rojo);color:#fff;}
+.item.agotado{opacity:.5;}
+.item-agotado-tag{color:var(--rojo);font-weight:700;}
+.empty-lista{text-align:center;padding:36px 20px;color:var(--suave);font-size:14px;}
+
+.form-h{font-size:18px;font-weight:800;color:var(--azul);margin-bottom:18px;}
+.form-group{margin-bottom:16px;}
+.form-row{display:flex;gap:12px;margin-bottom:16px;}
+.lbl{display:block;font-size:11.5px;font-weight:700;color:var(--suave);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;}
+.textarea{width:100%;border:1.5px solid var(--linea);border-radius:8px;padding:11px 13px;font-size:14px;background:#fff;min-height:85px;resize:vertical;font-family:inherit;}
+.textarea:focus{outline:none;border-color:var(--azul);}
+.img-picker{border:2px dashed var(--linea);border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;height:170px;background:#fff;transition:border-color .2s;}
+.img-picker:hover{border-color:var(--azul);}
+.img-picker img{width:100%;height:100%;object-fit:cover;}
+.img-ph{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--suave);font-size:13px;}
+.aviso-archivo{margin-top:10px;background:rgba(200,146,42,.1);border:1.5px dashed rgba(200,146,42,.5);border-radius:8px;padding:11px 13px;font-size:12px;line-height:1.7;color:#5c4a14;display:none;}
+.aviso-archivo code{background:rgba(200,146,42,.2);padding:1px 5px;border-radius:3px;font-weight:700;}
+.btn-dl-foto{margin-top:8px;background:var(--dorado);color:#fff;border:none;padding:8px 14px;border-radius:6px;font-size:12px;font-weight:700;font-family:inherit;}
+.sep{height:1px;background:var(--linea);margin:20px 0;}
+
+.help-txt{font-size:11.5px;color:var(--suave);margin-top:4px;line-height:1.5;}
+.help-txt code{background:var(--crema2);padding:1px 5px;border-radius:3px;font-weight:700;}
+
+.preview-card{background:#fff;border:1px solid var(--linea);border-radius:12px;padding:12px;margin-bottom:16px;display:flex;gap:12px;align-items:center;}
+.preview-card.rebajado{border-color:#e6391a;background:linear-gradient(135deg,#fff 70%,#fff5f4);}
+.preview-img{width:60px;height:60px;border-radius:8px;object-fit:cover;background:var(--crema2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;opacity:.5;}
+.preview-info{flex:1;min-width:0;}
+.preview-nombre{font-size:13px;font-weight:700;color:var(--azul);margin-bottom:3px;}
+.preview-precio{font-size:16px;font-weight:800;color:var(--azul);}
+.preview-precio.rebajado{color:#c0392b;}
+.preview-precio-orig{font-size:12px;color:#999;text-decoration:line-through;font-weight:500;margin-left:6px;}
+.preview-off{display:inline-block;background:linear-gradient(135deg,#e6391a,#ff6a2f);color:#fff;font-size:11px;font-weight:900;padding:2px 7px;border-radius:4px;margin-left:6px;letter-spacing:.02em;}
+
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px;}
+.stat{background:#fff;border:1px solid var(--linea);border-radius:10px;padding:14px;text-align:center;}
+.stat-n{font-size:24px;font-weight:800;color:var(--azul);}
+.stat-l{font-size:11px;color:var(--suave);text-transform:uppercase;letter-spacing:.06em;}
+
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#14532d;color:#fff;padding:12px 24px;border-radius:10px;font-weight:600;box-shadow:0 4px 15px rgba(0,0,0,0.3);z-index:999;animation:fadeIn 0.3s;max-width:90%;text-align:center;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="badge">VC</div>
+    <span class="hdr-titulo">Panel de Administración · VENTACIEN</span>
+    <a href="index.html" class="hdr-link">← Ver tienda</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- LOGIN -->
+  <div class="login-bg" id="loginWrap">
+    <div class="login-card">
+      <div class="login-ico">🔐</div>
+      <h2 class="login-h">Acceso privado</h2>
+      <p class="login-p">Esta página es solo para el administrador de VENTACIEN.</p>
+      <div class="pass-wrap">
+        <input type="password" class="input" id="passInput" placeholder="Contraseña" autocomplete="off">
+        <button type="button" class="toggle-pass" id="togglePass" title="Mostrar/ocultar contraseña">👁️</button>
+      </div>
+      <div class="err" id="loginErr"></div>
+      <button class="btn btn-azul" id="loginBtn">Entrar</button>
+    </div>
+  </div>
+
+  <!-- PANEL -->
+  <div id="panel">
+
+    <div class="stats" id="stats"></div>
+
+    <!-- TASAS DE CAMBIO -->
+    <div class="tasas-panel">
+      <div class="tasas-titulo">💱 Tasas de cambio (afectan los precios de la tienda)</div>
+      <div class="tasas-grid">
+        <div class="tasa-item"><label>USD (base)</label><input type="number" id="tasaUSD" value="1" step="0.01" readonly></div>
+        <div class="tasa-item"><label>MN (CUP)</label><input type="number" id="tasaMN" value="810" step="1"></div>
+        <div class="tasa-item"><label>Transferencia</label><input type="number" id="tasaTransferencia" value="825" step="1"></div>
+        <div class="tasa-item"><label>Zelle</label><input type="number" id="tasaZelle" value="1.05" step="0.01"></div>
+        <div class="tasa-item"><label>Tarjeta</label><input type="number" id="tasaTarjeta" value="1.1" step="0.01"></div>
+        <div class="tasa-item"><label>Euro</label><input type="number" id="tasaEuro" value="0.90" step="0.01"></div>
+      </div>
+      <div class="tasas-btns">
+        <button class="btn btn-azul" id="guardarTasasBtn">💾 Guardar (local)</button>
+        <button class="btn btn-verde" id="publicarTasasBtn">🚀 Publicar en GitHub</button>
+        <button class="btn btn-dorado" id="descargarTasasBtn">⬇ Descargar tasas.json</button>
+      </div>
+      <div class="tasas-help">💡 El <strong>USD</strong> siempre es 1 (es la moneda base). Los demás valores son el multiplicador desde USD. Ej: si MN = 810, un producto de 10 USD se mostrará como <code>8,100 MN</code>.</div>
+    </div>
+
+    <div class="acciones-github" id="gitConfig">
+      <input type="text" id="gitRepo" placeholder="usuario/repo (ej: revolico-cienfuegos/Catalogo-de-ventas)" style="flex:2;">
+      <input type="password" id="gitToken" placeholder="Token de GitHub (clásico)" style="flex:2;">
+      <button class="btn btn-azul" id="guardarGitConfig" style="width:auto;padding:8px 18px;">💾 Guardar</button>
+      <button class="btn btn-verde" id="publicarGitBtn" style="width:auto;padding:8px 18px;">🚀 Publicar productos</button>
+    </div>
+
+    <div class="aviso">
+      <strong>⚠️ Sincronización:</strong> Los productos que ves aquí están guardados en tu navegador (<code>localStorage</code>). <br>
+      ✅ Al guardar un producto con foto nueva, la imagen se subirá automáticamente a GitHub (si has configurado token y repositorio).<br>
+      <strong>💱 TASAS:</strong> Edita los valores del panel de arriba y pulsa <strong>🚀 Publicar en GitHub</strong> para que la tienda use las nuevas tasas. También puedes descargar <code>tasas.json</code> y subirlo manualmente.<br>
+      <strong>💡 REBAJAS:</strong> Rellena <code>Precio original</code> para activar la rebaja (badge -X% rojo y sección "Ofertas del día").<br>
+      <strong>⏱️ REBAJAS CON TIEMPO:</strong> La rebaja dura <strong>7 días</strong> desde la <code>Fecha de inicio de la rebaja</code>. Pasado ese tiempo, se quita automáticamente.<br>
+      <strong>🆕 NUEVO:</strong> El campo <code>fecha_agregado</code> controla cuándo se quita el badge "Nuevo" (7 días después).<br>
+      <strong>🎅 GORRO NAVIDEÑO:</strong> Cada producto tiene un checkbox propio para activar/desactivar la cinta verde y el gorro de regalo.
+    </div>
+
+    <div class="acciones-top">
+      <button class="btn btn-azul" id="nuevoBtn">＋ Agregar producto</button>
+      <button class="btn btn-dorado" id="descargarBtn">⬇ Descargar productos.json</button>
+    </div>
+
+    <input type="text" class="buscador-admin" id="buscarProducto" placeholder="🔍 Buscar producto por nombre...">
+    <span class="resultado-contador" id="contadorResultados"></span>
+
+    <select class="cat-select" id="filtroLista">
+      <option value="todas">📦 Todos los productos</option>
+    </select>
+
+    <div class="empty-lista" id="emptyLista" style="display:none;">Aún no hay productos. ¡Agrega el primero!</div>
+    <div class="lista" id="lista"></div>
+  </div>
+
+  <!-- FORMULARIO -->
+  <div id="form-producto">
+    <div class="form-h" id="formH">Nuevo producto</div>
+
+    <div class="preview-card" id="previewCard">
+      <div class="preview-img" id="previewImg">🖼️</div>
+      <div class="preview-info">
+        <div class="preview-nombre" id="previewNombre">Nombre del producto</div>
+        <div id="previewPrecio"></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="lbl">Foto del producto</label>
+      <div class="img-picker" id="imgPicker">
+        <div class="img-ph"><span style="font-size:32px;">🖼️</span><span>Tocar para elegir foto</span></div>
+      </div>
+      <input type="file" accept="image/*" id="fileInput" style="display:none;">
+      <div class="aviso-archivo" id="avisoArchivo"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="lbl">Categoría</label>
+      <select class="input" id="campoCategoria">
+        <option value="">-- Selecciona una categoría --</option>
+<option value="familiares">👨‍👩‍👧‍👦 Combos Familiares</option>
+<option value="pareja">💑 Combos para Dos</option>
+<option value="navidenos">🎄 Especiales Navideños</option>
+<option value="desayunos">🥞 Desayunos y Meriendas</option>
+<option value="bebidas-postres">🍰 Bebidas y Postres</option>
+</select>
+    </div>
+
+    <div class="form-group">
+      <label class="lbl">Nombre del producto</label>
+      <input type="text" class="input" id="campoNombre" placeholder="Ej: 🎄 Combo Familiar (4 personas) 🎄">
+    </div>
+
+    <div class="form-row">
+      <div style="flex:2;">
+        <label class="lbl">Precio actual (rebajado)</label>
+        <input type="text" class="input" id="campoPrecio" placeholder="Ej: 85" inputmode="decimal">
+      </div>
+      <div style="flex:1;">
+        <label class="lbl">Moneda</label>
+        <input type="text" class="input" id="campoMoneda" placeholder="USD">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="lbl">Precio original (para REBAJAS — opcional)</label>
+      <input type="text" class="input" id="campoPrecioOriginal" placeholder="Ej: 120 (dejar vacío si no hay rebaja)" inputmode="decimal">
+      <div class="help-txt">💡 Si pones un número <strong>mayor</strong> que el "Precio actual", se activa la rebaja: la tienda mostrará el precio tachado, un badge <code>-X%</code> rojo, y el producto aparecerá en <strong>Ofertas del día</strong>.</div>
+    </div>
+
+    <div class="form-group" id="grupoFechaRebaja" style="display:none;">
+      <label class="lbl">📅 Fecha de inicio de la rebaja (duración: 7 días)</label>
+      <input type="date" class="input" id="campoFechaRebaja">
+      <div class="help-txt">💡 La rebaja se <strong>quitará automáticamente 7 días</strong> después de esta fecha. Se rellena con hoy al activar una rebaja nueva.</div>
+    </div>
+
+    <div class="form-group">
+      <label class="lbl">Descripción</label>
+      <textarea class="textarea" id="campoDescripcion" placeholder="Características, especificaciones, estado, garantía..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="lbl">Etiqueta (pestaña "Tendencias" de la tienda)</label>
+      <select class="input" id="campoEtiqueta">
+        <option value="">Ninguna</option>
+        <option value="mas_vendido">🔥 Más vendido</option>
+        <option value="nuevo">🆕 Nuevo</option>
+      </select>
+    </div>
+
+    <div class="form-group" id="grupoFecha" style="display:none;">
+      <label class="lbl">Fecha de agregado (para calcular los 7 días)</label>
+      <input type="date" class="input" id="campoFechaAgregado">
+      <div class="help-txt" id="helpFecha">💡 El badge 🆕 <strong>Nuevo</strong> se quita automáticamente <strong>7 días</strong> después de esta fecha. Se rellena con hoy al marcar "Nuevo" en un producto nuevo.</div>
+    </div>
+
+    <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+      <input type="checkbox" id="campoAgotado" style="width:18px;height:18px;">
+      <label class="lbl" for="campoAgotado" style="margin:0;">🚫 Agotado (ocultarlo de la tienda online)</label>
+    </div>
+
+    <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+      <input type="checkbox" id="campoDomicilio" style="width:18px;height:18px;" checked>
+      <label class="lbl" for="campoDomicilio" style="margin:0;">🚚 Domicilio gratis (en Cienfuegos)</label>
+    </div>
+
+    <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+      <input type="checkbox" id="campoRegalo" style="width:18px;height:18px;" checked>
+      <label class="lbl" for="campoRegalo" style="margin:0;">🎅 Gorro navideño de regalo (promoción de Navidad)</label>
+    </div>
+    <div class="help-txt" style="margin-top:-8px;margin-bottom:14px;">
+      💡 Si lo desmarcas, el producto <strong>no</strong> mostrará la cinta verde ni el gorro navideño en la tienda, aunque su precio supere los 20 USD.
+    </div>
+
+    <button class="btn btn-azul" id="guardarBtn">Guardar producto</button>
+    <div class="sep"></div>
+    <button class="btn-outline" id="cancelarBtn">Cancelar</button>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+//  CONFIGURACIÓN
+// ============================================================
+const PASS = "V3nt4C13nFueg0s2026!";
+const LS = "vc_admin_productos";
+const LS_GIT = "vc_admin_git";
+const LS_TASAS = "vc_admin_tasas";
+const UMBRAL_REGALO_USD = 20;
+const DIAS_REBAJA = 7;
+
+// Tasas por defecto (deben coincidir con las del index)
+const TASAS_DEFAULT = {
+  USD: 1,
+  MN: 810,
+  Transferencia: 825,
+  Zelle: 1.05,
+  Tarjeta: 1.1,
+  Euro: 0.90
+};
+
+const CATS = [
+{id:"familiares",nombre:"Combos Familiares",ico:"👨‍👩‍👧‍👦"},
+{id:"pareja",nombre:"Combos para Dos",ico:"💑"},
+{id:"navidenos",nombre:"Especiales Navideños",ico:"🎄"},
+{id:"desayunos",nombre:"Desayunos y Meriendas",ico:"🥞"},
+{id:"bebidas-postres",nombre:"Bebidas y Postres",ico:"🍰"}
+];
+
+let productos=[], editandoId=null, imagenActual="", archivoPendiente=null, archivoNombre="";
+let filtroCategoria = "todas";
+let textoBusqueda = "";
+
+// ── UTILIDADES ──
+function catNombre(id){ return CATS.find(c=>c.id===id)?.nombre||id; }
+function catIco(id){ return CATS.find(c=>c.id===id)?.ico||"📦"; }
+function fmt(p,m){ return p?`${p} ${m||""}`.trim():""; }
+
+function tieneDescuento(p){
+  if (!p) return false;
+  const po = parseFloat(p.precio_original);
+  const pf = parseFloat(p.precio);
+  const baseOk = !isNaN(po) && !isNaN(pf) && po > pf && po > 0;
+  if (!baseOk) return false;
+  if (!p.fecha_rebaja) return true;
+  const fecha = new Date(p.fecha_rebaja);
+  if (isNaN(fecha.getTime())) return true;
+  const ahora = new Date();
+  const diffMs = ahora.getTime() - fecha.getTime();
+  if (diffMs < 0) return true;
+  const diasTranscurridos = diffMs / (1000 * 60 * 60 * 24);
+  return diasTranscurridos < DIAS_REBAJA;
+}
+
+function tieneRebajaBruta(p){
+  if (!p) return false;
+  const po = parseFloat(p.precio_original);
+  const pf = parseFloat(p.precio);
+  return !isNaN(po) && !isNaN(pf) && po > pf && po > 0;
+}
+
+function diasRestantesRebaja(p){
+  if (!tieneRebajaBruta(p)) return null;
+  if (!p.fecha_rebaja) return null;
+  const fecha = new Date(p.fecha_rebaja);
+  if (isNaN(fecha.getTime())) return null;
+  const ahora = new Date();
+  const diffMs = ahora.getTime() - fecha.getTime();
+  const dias = (1000 * 60 * 60 * 24);
+  const restantes = Math.ceil(DIAS_REBAJA - (diffMs / dias));
+  return Math.max(0, restantes);
+}
+
+function porcentajeDescuento(p){
+  if (!tieneDescuento(p)) return 0;
+  const po = parseFloat(p.precio_original);
+  const pf = parseFloat(p.precio);
+  return Math.round(((po - pf) / po) * 100);
+}
+
+function tieneRegalo(p){
+  if (!p) return false;
+  if (p.regalo_navideno === true || p.regalo_navideno === "true") return true;
+  if (p.regalo_navideno === false || p.regalo_navideno === "false") return false;
+  const v = parseFloat(p.precio);
+  return !isNaN(v) && v > UMBRAL_REGALO_USD;
+}
+
+function hoyISO(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${dd}`;
+}
+
+function mostrarToast(msg, color="#14532d"){
+  const old = document.querySelector(".toast");
+  if(old) old.remove();
+  const div = document.createElement("div");
+  div.className = "toast";
+  div.textContent = msg;
+  div.style.background = color;
+  document.body.appendChild(div);
+  setTimeout(()=>div.remove(), 5000);
+}
+
+// ============================================================
+//  LOGIN
+// ============================================================
+const passInput = document.getElementById("passInput");
+const togglePass = document.getElementById("togglePass");
+
+togglePass.addEventListener("click", () => {
+  if (passInput.type === "password") {
+    passInput.type = "text";
+    togglePass.textContent = "🙈";
+  } else {
+    passInput.type = "password";
+    togglePass.textContent = "👁️";
+  }
+  passInput.focus();
+});
+
+document.getElementById("loginBtn").addEventListener("click", login);
+passInput.addEventListener("keydown", e=>{ if(e.key==="Enter") login(); });
+window.addEventListener("load", ()=>{ passInput.focus(); });
+
+function login(){
+  const errEl = document.getElementById("loginErr");
+  const escrito = (passInput.value || "").trim();
+  if(escrito === ""){ errEl.textContent = "Escribe la contraseña."; return; }
+  if(escrito === PASS){
+    errEl.textContent = "";
+    document.getElementById("loginWrap").style.display="none";
+    document.getElementById("panel").style.display="block";
+    cargar();
+    cargarConfigGit();
+    cargarTasasAdmin();
+  } else {
+    errEl.innerHTML = "❌ Contraseña incorrecta.<br><small style='color:#6b6050;'>Revisa mayúsculas, números (1 vs l, 0 vs O) y el signo <b>!</b> al final. Sin espacios.</small>";
+    passInput.focus();
+    passInput.select();
+  }
+}
+
+// ============================================================
+//  TASAS DE CAMBIO (ADMIN)
+// ============================================================
+function leerInputsTasas(){
+  return {
+    USD: 1,
+    MN: parseFloat(document.getElementById("tasaMN").value) || TASAS_DEFAULT.MN,
+    Transferencia: parseFloat(document.getElementById("tasaTransferencia").value) || TASAS_DEFAULT.Transferencia,
+    Zelle: parseFloat(document.getElementById("tasaZelle").value) || TASAS_DEFAULT.Zelle,
+    Tarjeta: parseFloat(document.getElementById("tasaTarjeta").value) || TASAS_DEFAULT.Tarjeta,
+    Euro: parseFloat(document.getElementById("tasaEuro").value) || TASAS_DEFAULT.Euro,
+  };
+}
+
+function rellenarInputsTasas(tasas){
+  document.getElementById("tasaUSD").value = 1;
+  document.getElementById("tasaMN").value = tasas.MN;
+  document.getElementById("tasaTransferencia").value = tasas.Transferencia;
+  document.getElementById("tasaZelle").value = tasas.Zelle;
+  document.getElementById("tasaTarjeta").value = tasas.Tarjeta;
+  document.getElementById("tasaEuro").value = tasas.Euro;
+}
+
+async function cargarTasasAdmin(){
+  let tasas = { ...TASAS_DEFAULT };
+  // 1) Intentar servidor
+  try {
+    const res = await fetch("tasas.json?_="+Date.now(), { cache: "no-store" });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && typeof data === "object") {
+        tasas = { ...TASAS_DEFAULT, ...data, USD: 1 };
+      }
+    }
+  } catch(e){ /* fallback */ }
+  // 2) Fallback localStorage
+  if (!tasas.MN || tasas.MN === TASAS_DEFAULT.MN) {
+    try {
+      const local = localStorage.getItem(LS_TASAS);
+      if (local) {
+        const data = JSON.parse(local);
+        if (data && typeof data === "object") {
+          tasas = { ...TASAS_DEFAULT, ...data, USD: 1 };
+        }
+      }
+    } catch(_) {}
+  }
+  rellenarInputsTasas(tasas);
+  localStorage.setItem(LS_TASAS, JSON.stringify(tasas));
+  console.log("💱 Tasas cargadas en admin:", tasas);
+}
+
+document.getElementById("guardarTasasBtn").addEventListener("click", ()=>{
+  const tasas = leerInputsTasas();
+  localStorage.setItem(LS_TASAS, JSON.stringify(tasas));
+  mostrarToast("✅ Tasas guardadas en local", "#1a8a4a");
+});
+
+document.getElementById("publicarTasasBtn").addEventListener("click", async ()=>{
+  const {repo, token} = obtenerConfigGit();
+  if(!repo || !token){
+    mostrarToast("❌ Configura primero el repositorio y el token de GitHub", "#c0392b");
+    return;
+  }
+  const tasas = leerInputsTasas();
+  const btn = document.getElementById("publicarTasasBtn");
+  btn.textContent = "⏳ Publicando...";
+  btn.disabled = true;
+  try {
+    const contenido = JSON.stringify(tasas, null, 2);
+    const sha = await obtenerSHAArchivo(repo, token, "tasas.json");
+    await actualizarArchivoEnRepo(repo, token, "tasas.json", contenido, sha);
+    localStorage.setItem(LS_TASAS, JSON.stringify(tasas));
+    mostrarToast("✅ Tasas publicadas en GitHub correctamente", "#1a8a4a");
+  } catch(err) {
+    mostrarToast("❌ Error: " + err.message, "#c0392b");
+  } finally {
+    btn.textContent = "🚀 Publicar en GitHub";
+    btn.disabled = false;
+  }
+});
+
+document.getElementById("descargarTasasBtn").addEventListener("click", ()=>{
+  const tasas = leerInputsTasas();
+  const blob = new Blob([JSON.stringify(tasas, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = "tasas.json";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  mostrarToast("✅ tasas.json descargado · súbelo a GitHub", "#14532d");
+});
+
+// ── CONFIGURACIÓN GITHUB ──
+function cargarConfigGit(){
+  const data = localStorage.getItem(LS_GIT);
+  if(data){
+    try{
+      const {repo, token} = JSON.parse(data);
+      document.getElementById("gitRepo").value = repo||"";
+      document.getElementById("gitToken").value = token||"";
+    }catch(e){}
+  }
+}
+
+function obtenerConfigGit(){
+  const repo = document.getElementById("gitRepo").value.trim();
+  const token = document.getElementById("gitToken").value.trim();
+  return {repo, token};
+}
+
+document.getElementById("guardarGitConfig").addEventListener("click", ()=>{
+  const {repo, token} = obtenerConfigGit();
+  if(!repo || !token){
+    mostrarToast("❌ Completa ambos campos (repo y token)", "#c0392b");
+    return;
+  }
+  localStorage.setItem(LS_GIT, JSON.stringify({repo, token}));
+  mostrarToast("✅ Configuración guardada", "#1a8a4a");
+});
+
+// ── SUBIR IMAGEN A GITHUB ──
+async function subirImagenAGitHub(repo, token, nombreArchivo, blobImagen){
+  const urlBase = `https://api.github.com/repos/${repo}/contents/imagen/${nombreArchivo}`;
+  let sha = null;
+  try {
+    const res = await fetch(urlBase, {
+      headers: { Authorization: `token ${token}`, Accept: "application/vnd.github.v3+json" }
+    });
+    if(res.ok){
+      const data = await res.json();
+      sha = data.sha;
+    } else if(res.status !== 404){
+      throw new Error(`Error al verificar imagen: ${res.status} ${res.statusText}`);
+    }
+  } catch(e){
+    if(!e.message.includes("404")) throw e;
+  }
+
+  const base64 = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blobImagen);
+  });
+
+  const body = {
+    message: `Subir imagen ${nombreArchivo} desde panel admin VENTACIEN`,
+    content: base64,
+    branch: "main"
+  };
+  if(sha) body.sha = sha;
+
+  const res = await fetch(urlBase, {
+    method: "PUT",
+    headers: {
+      Authorization: `token ${token}`,
+      "Content-Type": "application/json",
+      Accept: "application/vnd.github.v3+json"
+    },
+    body: JSON.stringify(body)
+  });
+  if(!res.ok){
+    const err = await res.json();
+    throw new Error(err.message || `HTTP ${res.status}`);
+  }
+  return true;
+}
+
+// ── GITHUB: helpers genéricos ──
+async function obtenerSHAArchivo(repo, token, nombreArchivo){
+  const url = `https://api.github.com/repos/${repo}/contents/${nombreArchivo}`;
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `token ${token}`,
+      Accept: "application/vnd.github.v3+json"
+    }
+  });
+  if(res.status === 404) return null;
+  if(!res.ok) throw new Error(`Error al obtener SHA de ${nombreArchivo}: ${res.status} ${res.statusText}`);
+  const data = await res.json();
+  return data.sha;
+}
+
+async function actualizarArchivoEnRepo(repo, token, nombreArchivo, contenido, sha){
+  const url = `https://api.github.com/repos/${repo}/contents/${nombreArchivo}`;
+  const body = {
+    message: `Actualización de ${nombreArchivo} desde panel admin VENTACIEN`,
+    content: btoa(unescape(encodeURIComponent(contenido))),
+    sha: sha || undefined
+  };
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Authorization: `token ${token}`,
+      "Content-Type": "application/json",
+      Accept: "application/vnd.github.v3+json"
+    },
+    body: JSON.stringify(body)
+  });
+  if(!res.ok){
+    const err = await res.json();
+    throw new Error(err.message || `HTTP ${res.status}`);
+  }
+  return true;
+}
+
+// ── PUBLICAR PRODUCTOS ──
+document.getElementById("publicarGitBtn").addEventListener("click", async ()=>{
+  const {repo, token} = obtenerConfigGit();
+  if(!repo || !token){
+    mostrarToast("❌ Configura primero el repositorio y el token", "#c0392b");
+    return;
+  }
+  if(productos.length === 0){
+    mostrarToast("❌ No hay productos para publicar", "#c0392b");
+    return;
+  }
+
+  const btn = document.getElementById("publicarGitBtn");
+  btn.textContent = "⏳ Publicando...";
+  btn.disabled = true;
+
+  try {
+    if(archivoPendiente && archivoNombre){
+      mostrarToast("⏳ Subiendo imagen pendiente...", "#14532d");
+      try {
+        await subirImagenAGitHub(repo, token, archivoNombre, archivoPendiente);
+        archivoPendiente = null;
+        archivoNombre = "";
+        mostrarToast("✅ Imagen subida correctamente", "#1a8a4a");
+      } catch(err) {
+        mostrarToast("⚠️ Error al subir imagen: "+err.message, "#c0392b");
+      }
+    }
+
+    mostrarToast("⏳ Publicando productos.json...", "#14532d");
+    const contenido = JSON.stringify(productos, null, 2);
+    const sha = await obtenerSHAArchivo(repo, token, "productos.json");
+    await actualizarArchivoEnRepo(repo, token, "productos.json", contenido, sha);
+    mostrarToast("✅ Productos publicados en GitHub correctamente", "#1a8a4a");
+  } catch(err){
+    mostrarToast("❌ Error: "+err.message, "#c0392b");
+  } finally {
+    btn.textContent = "🚀 Publicar productos";
+    btn.disabled = false;
+  }
+});
+
+// ── DATOS ──
+function cargar(){
+  fetch("productos.json?_="+Date.now(), { cache: "no-store", headers: { "Cache-Control": "no-cache" } })
+    .then(r=>r.json())
+    .then(d=>{
+      productos=Array.isArray(d)?d:[];
+      localStorage.setItem(LS, JSON.stringify(productos));
+      renderStats();
+      renderLista();
+      buildFiltro();
+    })
+    .catch(()=>{
+      const local = localStorage.getItem(LS);
+      if(local){
+        try{ productos=JSON.parse(local); }catch(e){ productos=[]; }
+      } else { productos=[]; }
+      renderStats();
+      renderLista();
+      buildFiltro();
+    });
+}
+
+function guardarLocal(){ localStorage.setItem(LS, JSON.stringify(productos)); }
+
+// ── STATS ──
+function renderStats(){
+  const total = productos.length;
+  const cats = new Set(productos.map(p=>p.categoria)).size;
+  const ofertas = productos.filter(p => tieneDescuento(p)).length;
+  const nuevos = productos.filter(p => p.etiqueta === "nuevo").length;
+  document.getElementById("stats").innerHTML=`
+    <div class="stat"><div class="stat-n">${total}</div><div class="stat-l">Productos</div></div>
+    <div class="stat"><div class="stat-n">${cats}</div><div class="stat-l">Categorías</div></div>
+    <div class="stat"><div class="stat-n" style="color:#c0392b;">${ofertas}</div><div class="stat-l">🔥 Rebajados</div></div>
+    <div class="stat"><div class="stat-n" style="color:#1257c9;">${nuevos}</div><div class="stat-l">🆕 Nuevos</div></div>
+  `;
+}
+
+// ── FILTRO Y BÚSQUEDA ──
+function buildFiltro(){
+  const sel = document.getElementById("filtroLista");
+  const catsActivas = CATS.filter(c=>productos.some(p=>p.categoria===c.id));
+  sel.innerHTML = `<option value="todas">📦 Todos (${productos.length})</option>` +
+    catsActivas.map(c=>{
+      const n = productos.filter(p=>p.categoria===c.id).length;
+      return `<option value="${c.id}">${c.ico} ${c.nombre} (${n})</option>`;
+    }).join("");
+  if (filtroCategoria && sel.querySelector(`option[value="${filtroCategoria}"]`)) {
+    sel.value = filtroCategoria;
+  } else {
+    sel.value = "todas";
+  }
+}
+
+document.getElementById("filtroLista").addEventListener("change", e=>{
+  filtroCategoria = e.target.value;
+  renderLista();
+});
+
+document.getElementById("buscarProducto").addEventListener("input", e=>{
+  textoBusqueda = e.target.value.trim().toLowerCase();
+  renderLista();
+});
+
+// ── LISTA ──
+function renderLista(){
+  const lista = document.getElementById("lista");
+  const empty = document.getElementById("emptyLista");
+  const contador = document.getElementById("contadorResultados");
+
+  let datos = productos;
+  if (filtroCategoria !== "todas") {
+    datos = datos.filter(p => p.categoria === filtroCategoria);
+  }
+  if (textoBusqueda !== "") {
+    datos = datos.filter(p => p.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(textoBusqueda));
+  }
+
+  contador.textContent = datos.length > 0 ? `🔍 ${datos.length} producto${datos.length!==1?"s":""} encontrado${datos.length!==1?"s":""}` : "";
+
+  if(!datos.length){
+    empty.style.display="block";
+    lista.innerHTML="";
+    return;
+  }
+  empty.style.display="none";
+
+  lista.innerHTML = datos.map(p=>{
+    const hasImg = p.imagen && p.imagen.length > 0;
+    const imgHtml = hasImg ? `<div style="position:relative;"><img class="item-img" src="${p.imagen}" alt="${p.nombre}" loading="lazy" onerror="console.warn('Admin lista: imagen no encontrada:', this.src); this.style.display='none'; this.parentElement.querySelector('.item-img-ph').style.display='flex';"><div class="item-img-ph" style="display:none;">🖼️</div></div>` : `<div class="item-img-ph">🖼️</div>`;
+    const desc = tieneDescuento(p);
+    const pct = desc ? porcentajeDescuento(p) : 0;
+    const regalo = tieneRegalo(p);
+    const diasRest = diasRestantesRebaja(p);
+    const rebajaVencida = tieneRebajaBruta(p) && !tieneDescuento(p);
+    let rebajaInfo = "";
+    if (desc && diasRest !== null) {
+      rebajaInfo = ` · <span style="color:#c0392b;font-weight:700;">⏱️ ${diasRest} día${diasRest!==1?'s':''} restante${diasRest!==1?'s':''}</span>`;
+    } else if (rebajaVencida) {
+      rebajaInfo = ` · <span style="color:#999;font-weight:700;">⏱️ rebaja vencida</span>`;
+    }
+    return `
+    <div class="item ${p.agotado?'agotado':''} ${desc?'rebajado':''}">
+      ${imgHtml}
+      <div class="item-info">
+        <div class="item-cat">${catIco(p.categoria)} ${catNombre(p.categoria)}${p.etiqueta==="mas_vendido"?' · 🔥 Más vendido':p.etiqueta==="nuevo"?' · 🆕 Nuevo':''}${desc?' · 🔥 OFERTA':''}${regalo?' · 🎅 Regalo':''}${p.agotado?' · <span class="item-agotado-tag">Agotado</span>':''}${rebajaInfo}</div>
+        <div class="item-nombre">${p.nombre||"(sin nombre)"}</div>
+        <div class="item-precio">${desc 
+          ? `${fmt(p.precio,p.moneda)} <span class="precio-orig">${fmt(p.precio_original,p.moneda)}</span> <span class="precio-off">-${pct}%</span>`
+          : fmt(p.precio,p.moneda)}</div>
+        ${p.domicilio_gratis === false ? '<div style="font-size:10px;color:#c0392b;font-weight:700;">🚫 Sin domicilio gratis</div>' : ''}
+        ${p.fecha_agregado && p.etiqueta==="nuevo" ? `<div style="font-size:10px;color:#6b6050;">📅 Agregado: ${p.fecha_agregado}</div>` : ''}
+        ${p.fecha_rebaja && tieneRebajaBruta(p) ? `<div style="font-size:10px;color:#6b6050;">📅 Rebaja iniciada: ${p.fecha_rebaja}</div>` : ''}
+      </div>
+      <div class="item-btns">
+        <button class="btn-stock ${p.agotado?'activo':''}" data-stock="${p.id}" title="${p.agotado?'Marcar como disponible':'Marcar como agotado'}">${p.agotado?'✅':'🚫'}</button>
+        <button class="btn-sm" data-id="${p.id}">✏️</button>
+        <button class="btn-del" data-del="${p.id}">✕</button>
+      </div>
+    </div>
+  `}).join("");
+
+  lista.querySelectorAll(".btn-sm").forEach(b=>b.addEventListener("click",()=>abrirForm(productos.find(p=>p.id===b.dataset.id))));
+  lista.querySelectorAll(".btn-del").forEach(b=>b.addEventListener("click",()=>eliminar(b.dataset.del)));
+  lista.querySelectorAll(".btn-stock").forEach(b=>b.addEventListener("click",()=>toggleAgotado(b.dataset.stock)));
+}
+
+function toggleAgotado(id){
+  const p = productos.find(p=>p.id===id);
+  if(!p) return;
+  p.agotado = !p.agotado;
+  guardarLocal();
+  renderLista();
+}
+
+function eliminar(id){
+  if(!confirm("¿Eliminar este producto?")) return;
+  productos = productos.filter(p=>p.id!==id);
+  guardarLocal(); 
+  renderStats(); 
+  buildFiltro(); 
+  renderLista();
+}
+
+// ── FORMULARIO ──
+document.getElementById("nuevoBtn").addEventListener("click",()=>abrirForm(null));
+document.getElementById("cancelarBtn").addEventListener("click",cerrarForm);
+
+function abrirForm(p){
+  document.getElementById("panel").style.display="none";
+  document.getElementById("form-producto").style.display="block";
+  document.getElementById("formH").textContent = p?"Editar producto":"Nuevo producto";
+  editandoId=p?p.id:null;
+  imagenActual=p?(p.imagen||""):"";
+  archivoPendiente=null; archivoNombre="";
+  document.getElementById("campoCategoria").value=p?(p.categoria||""):"";
+  document.getElementById("campoNombre").value=p?(p.nombre||""):"";
+  document.getElementById("campoPrecio").value=p?(p.precio||""):"";
+  document.getElementById("campoPrecioOriginal").value=p?(p.precio_original||""):"";
+  document.getElementById("campoMoneda").value=p?(p.moneda||"USD"):"USD";
+  document.getElementById("campoDescripcion").value=p?(p.descripcion||""):"";
+  document.getElementById("campoEtiqueta").value=p?(p.etiqueta||""):"";
+  document.getElementById("campoAgotado").checked=p?!!p.agotado:false;
+  document.getElementById("campoDomicilio").checked=p? (p.domicilio_gratis !== false) : true;
+
+  let regaloChecked;
+  if (p) {
+    if (typeof p.regalo_navideno === "boolean") regaloChecked = p.regalo_navideno;
+    else if (p.regalo_navideno === "true") regaloChecked = true;
+    else if (p.regalo_navideno === "false") regaloChecked = false;
+    else {
+      const pr = parseFloat(p.precio);
+      regaloChecked = !isNaN(pr) && pr > UMBRAL_REGALO_USD;
+    }
+  } else {
+    regaloChecked = true;
+  }
+  document.getElementById("campoRegalo").checked = regaloChecked;
+
+  const etiquetaSel = document.getElementById("campoEtiqueta").value;
+  const grupoFecha = document.getElementById("grupoFecha");
+  const campoFecha = document.getElementById("campoFechaAgregado");
+  if(etiquetaSel === "nuevo"){
+    grupoFecha.style.display = "block";
+    campoFecha.value = p && p.fecha_agregado ? p.fecha_agregado : hoyISO();
+  } else {
+    grupoFecha.style.display = "none";
+    campoFecha.value = p && p.fecha_agregado ? p.fecha_agregado : "";
+  }
+
+  const grupoFechaRebaja = document.getElementById("grupoFechaRebaja");
+  const campoFechaRebaja = document.getElementById("campoFechaRebaja");
+  if (p && tieneRebajaBruta(p)) {
+    grupoFechaRebaja.style.display = "block";
+    campoFechaRebaja.value = p.fecha_rebaja || hoyISO();
+  } else {
+    grupoFechaRebaja.style.display = "none";
+    campoFechaRebaja.value = "";
+  }
+
+  const av=document.getElementById("avisoArchivo");
+  av.style.display="none"; av.innerHTML="";
+  actualizarPicker(p&&p.imagen?p.imagen:null);
+  if(p&&p.imagen){ av.style.display="block"; av.innerHTML=`📌 Foto actual: <code>${p.imagen}</code>`; }
+  actualizarPreview();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function cerrarForm(){
+  document.getElementById("form-producto").style.display="none";
+  document.getElementById("panel").style.display="block";
+  textoBusqueda = "";
+  document.getElementById("buscarProducto").value = "";
+  renderLista();
+}
+
+function actualizarPicker(src){
+  const pk=document.getElementById("imgPicker");
+  if(src){
+    pk.innerHTML = `<img src="${src}" alt="vista previa" onerror="console.warn('Admin picker: imagen no encontrada:', this.src); this.style.display='none'; this.parentElement.querySelector('.img-ph').style.display='flex';"><div class="img-ph" style="display:none;"><span style="font-size:32px;">🖼️</span><span>Foto no encontrada</span></div>`;
+  } else {
+    pk.innerHTML = `<div class="img-ph"><span style="font-size:32px;">🖼️</span><span>Tocar para elegir foto</span></div>`;
+  }
+}
+
+function actualizarPreview(){
+  const nombre = document.getElementById("campoNombre").value.trim() || "Nombre del producto";
+  const precio = document.getElementById("campoPrecio").value.trim();
+  const precioOrig = document.getElementById("campoPrecioOriginal").value.trim();
+  const moneda = document.getElementById("campoMoneda").value.trim() || "USD";
+
+  document.getElementById("previewNombre").textContent = nombre;
+
+  const po = parseFloat(precioOrig);
+  const pf = parseFloat(precio);
+  const desc = !isNaN(po) && !isNaN(pf) && po > pf && po > 0;
+  const pct = desc ? Math.round(((po - pf) / po) * 100) : 0;
+
+  const card = document.getElementById("previewCard");
+  const precioEl = document.getElementById("previewPrecio");
+
+  const grupoFechaRebaja = document.getElementById("grupoFechaRebaja");
+  const campoFechaRebaja = document.getElementById("campoFechaRebaja");
+  if (desc) {
+    grupoFechaRebaja.style.display = "block";
+    if (!campoFechaRebaja.value) campoFechaRebaja.value = hoyISO();
+  } else {
+    grupoFechaRebaja.style.display = "none";
+  }
+
+  if(desc){
+    card.classList.add("rebajado");
+    precioEl.innerHTML = `
+      <span class="preview-precio rebajado">${pf.toFixed(2)} ${moneda}</span>
+      <span class="preview-precio-orig">${po.toFixed(2)} ${moneda}</span>
+      <span class="preview-off">-${pct}%</span>
+    `;
+  } else {
+    card.classList.remove("rebajado");
+    if(precio){
+      precioEl.innerHTML = `<span class="preview-precio">${pf.toFixed(2)} ${moneda}</span>`;
+    } else {
+      precioEl.innerHTML = `<span class="preview-precio" style="color:#999;font-size:13px;">Sin precio</span>`;
+    }
+  }
+
+  const previewImg = document.getElementById("previewImg");
+  if(imagenActual){
+    previewImg.innerHTML = `<img src="${imagenActual}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" onerror="this.parentElement.textContent='🖼️';">`;
+  } else {
+    previewImg.textContent = "🖼️";
+  }
+}
+
+["campoNombre","campoPrecio","campoPrecioOriginal","campoMoneda"].forEach(id=>{
+  document.getElementById(id).addEventListener("input", actualizarPreview);
+});
+
+document.getElementById("campoEtiqueta").addEventListener("change", e=>{
+  const grupoFecha = document.getElementById("grupoFecha");
+  const campoFecha = document.getElementById("campoFechaAgregado");
+  if(e.target.value === "nuevo"){
+    grupoFecha.style.display = "block";
+    if(!campoFecha.value) campoFecha.value = hoyISO();
+  } else {
+    grupoFecha.style.display = "none";
+  }
+});
+
+document.getElementById("imgPicker").addEventListener("click",()=>document.getElementById("fileInput").click());
+
+document.getElementById("fileInput").addEventListener("change", async e=>{
+  const file=e.target.files?.[0]; if(!file) return;
+  if(file.size>8*1024*1024){ alert("Imagen muy grande. Usa menos de 8MB."); return; }
+  const nombre=document.getElementById("campoNombre").value.trim();
+  const precio=document.getElementById("campoPrecio").value.trim();
+  if(!nombre || !precio){
+    alert("Primero escribe el Nombre y el Precio del producto, y después elige la foto (el nombre del archivo se genera igual que en imagen.py, usando esos dos datos).");
+    e.target.value = "";
+    return;
+  }
+
+  const av=document.getElementById("avisoArchivo");
+  av.style.display="block";
+  av.innerHTML = "⏳ Convirtiendo la foto a JPG...";
+
+  let blobJpeg;
+  try{
+    blobJpeg = await convertirAJPEG(file);
+  }catch(err){
+    alert("No se pudo convertir esa foto a JPG. Prueba con otra imagen.");
+    av.style.display="none";
+    e.target.value = "";
+    return;
+  }
+
+  const PALABRAS_IGNORAR = new Set(['de','para','con','por','en','a','el','la','los','las','marca','portátil','digital','inteligente']);
+  function quitarAcentos(str){ return str.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^\x00-\x7F]/g,''); }
+  function slugifyCorto(texto){
+    let t = quitarAcentos(texto);
+    t = t.replace(/[^\w\s-]/g,'');
+    const palabras = t.split(/\s+/).filter(Boolean);
+    const filtradas = palabras.filter(p => !PALABRAS_IGNORAR.has(p.toLowerCase()) && p.length > 2);
+    if(filtradas.length === 0) return 'producto';
+    let base = filtradas.slice(0,2).join('-');
+    if(base.length > 30) base = base.slice(0,30);
+    return base;
+  }
+  function generarNombreImagen(nombreProducto, precio, extension){
+    let limpio = (nombreProducto||'').replace(/[🔥()]/g,'');
+    limpio = limpio.replace(/\[.*?\]/g,'');
+    const base = slugifyCorto(limpio);
+    const nombreBase = `${base}-${precio}usd`;
+    const nombresExistentes = new Set(productos.filter(p => p.id !== editandoId).map(p => (p.imagen||'').split('/').pop()));
+    let candidato = `${nombreBase}.${extension}`;
+    let contador = 1;
+    while(nombresExistentes.has(candidato)){
+      contador++;
+      candidato = `${nombreBase}-${contador}.${extension}`;
+    }
+    return candidato;
+  }
+
+  archivoNombre=generarNombreImagen(nombre, precio, "jpg");
+  imagenActual=`imagen/${archivoNombre}`;
+  archivoPendiente=blobJpeg;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    actualizarPicker(reader.result);
+    actualizarPreview();
+  };
+  reader.readAsDataURL(blobJpeg);
+  av.innerHTML=`📌 Nombre exacto para subir a la carpeta <code>imagen/</code>:<br><code>${archivoNombre}</code><br><small>La foto se convirtió automáticamente a JPG.</small><br><button class="btn-dl-foto" id="btnDlFoto">⬇ Descargar foto renombrada</button>`;
+  document.getElementById("btnDlFoto").addEventListener("click",()=>{
+    if(!archivoPendiente) return;
+    const url=URL.createObjectURL(archivoPendiente);
+    const a=document.createElement("a"); a.href=url; a.download=archivoNombre;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  });
+});
+
+function convertirAJPEG(file, calidad=0.9){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob(blob=>{
+          if(blob) resolve(blob); else reject(new Error('No se pudo convertir la imagen a JPG'));
+        }, 'image/jpeg', calidad);
+      };
+      img.onerror = ()=>reject(new Error('No se pudo leer la imagen seleccionada'));
+      img.src = ev.target.result;
+    };
+    reader.onerror = ()=>reject(new Error('No se pudo leer el archivo'));
+    reader.readAsDataURL(file);
+  });
+}
+
+// ── GUARDAR PRODUCTO ──
+document.getElementById("guardarBtn").addEventListener("click", async ()=>{
+  const cat=document.getElementById("campoCategoria").value;
+  const nombre=document.getElementById("campoNombre").value.trim();
+  if(!cat){ alert("Selecciona una categoría."); return; }
+  if(!nombre){ alert("Ponle un nombre al producto."); return; }
+
+  const etiqueta = document.getElementById("campoEtiqueta").value;
+  const fechaAgregadoInput = document.getElementById("campoFechaAgregado").value;
+  const fechaRebajaInput = document.getElementById("campoFechaRebaja").value;
+
+  const precioStr = document.getElementById("campoPrecio").value.trim();
+  const precioOrigStr = document.getElementById("campoPrecioOriginal").value.trim();
+  const pNum = parseFloat(precioStr);
+  const poNum = parseFloat(precioOrigStr);
+  if(precioOrigStr && !isNaN(poNum) && !isNaN(pNum) && poNum <= pNum){
+    alert("El 'Precio original' debe ser MAYOR que el 'Precio actual' para que sea una rebaja válida. Si no quieres rebaja, deja el campo vacío.");
+    return;
+  }
+
+  const datos={
+    id:editandoId||("p_"+Date.now()),
+    categoria:cat, nombre,
+    precio:precioStr,
+    moneda:document.getElementById("campoMoneda").value.trim(),
+    descripcion:document.getElementById("campoDescripcion").value.trim(),
+    etiqueta:etiqueta,
+    agotado:document.getElementById("campoAgotado").checked,
+    domicilio_gratis:document.getElementById("campoDomicilio").checked,
+    regalo_navideno:document.getElementById("campoRegalo").checked,
+    imagen:imagenActual,
+  };
+
+  const hayRebaja = precioOrigStr && !isNaN(poNum) && !isNaN(pNum) && poNum > pNum;
+  if(hayRebaja){
+    datos.precio_original = precioOrigStr;
+    datos.fecha_rebaja = fechaRebajaInput || hoyISO();
+  }
+
+  if(etiqueta === "nuevo"){
+    datos.fecha_agregado = fechaAgregadoInput || hoyISO();
+  } else if(fechaAgregadoInput){
+    datos.fecha_agregado = fechaAgregadoInput;
+  }
+
+  if(archivoPendiente && archivoNombre){
+    const {repo, token} = obtenerConfigGit();
+    if(repo && token){
+      try {
+        mostrarToast("⏳ Subiendo imagen a GitHub...", "#14532d");
+        await subirImagenAGitHub(repo, token, archivoNombre, archivoPendiente);
+        mostrarToast("✅ Imagen subida correctamente", "#1a8a4a");
+        archivoPendiente = null;
+        archivoNombre = "";
+      } catch(err) {
+        mostrarToast("⚠️ Error al subir imagen: "+err.message+" (el producto se guarda igual)", "#c0392b");
+      }
+    } else {
+      mostrarToast("⚠️ Configura GitHub (repo y token) para subir imágenes automáticamente", "#c8922a");
+    }
+  }
+
+  const idx=productos.findIndex(p=>p.id===datos.id);
+  if(idx>=0) productos[idx]=datos; else productos.push(datos);
+  guardarLocal();
+  renderStats();
+  buildFiltro();
+  cerrarForm();
+  renderLista();
+
+  if (hayRebaja) {
+    mostrarToast(`✅ Producto guardado · Rebaja activa por 7 días`, "#14532d");
+  } else {
+    mostrarToast("✅ Producto guardado en local", "#14532d");
+  }
+});
+
+// ── DESCARGAR JSON ──
+document.getElementById("descargarBtn").addEventListener("click",()=>{
+  if(productos.length===0){
+    alert("No hay productos para descargar.");
+    return;
+  }
+  const blob=new Blob([JSON.stringify(productos,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download="productos.json";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  alert(`✅ Descargado ${productos.length} productos.\n\n1. Sube el archivo productos.json a GitHub (reemplaza el viejo).\n2. Sube las fotos nuevas a la carpeta imagen/.\n3. Recarga la tienda con Ctrl+F5 para ver los cambios.`);
+});
+
+// LIMPIEZA DE SERVICE WORKER
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(reg => reg.unregister());
+  });
+}
+if (window.caches) {
+  caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
+}
+</script>
+</body>
+</html>
