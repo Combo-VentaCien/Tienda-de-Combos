@@ -9,11 +9,11 @@
     "etiqueta": "mas_vendido",
     "agotado": false,
     "domicilio_gratis": true,
-    "regalo_navideno": true,
+    "regalo_navideno": false,
     "imagen": "imagen/combo-familiar.jpg",
-    "fecha_agregado": "2026-11-11",
     "precio_original": "26",
-    "fecha_rebaja": "2026-11-12"
+    "fecha_rebaja": "2026-11-12",
+    "fecha_agregado": "2026-11-11"
   },
   {
     "id": "p_1763000000001",
