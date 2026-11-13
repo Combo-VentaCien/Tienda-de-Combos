@@ -1,7 +1,0 @@
-[
-  {"id":"c1","categoria":"individuales","nombre":"Combo Clásico","descripcion":"Hamburguesa, papas fritas y refresco. (PRODUCTO DE EJEMPLO)","precio":6.5,"precioAnterior":8,"imagen":"","emoji":"🍔","etiqueta":"mas_vendido","activo":true,"agotado":false},
-  {"id":"c2","categoria":"familiares","nombre":"Combo Familiar","descripcion":"Pollo frito para 4, arroz y ensalada. (PRODUCTO DE EJEMPLO)","precio":22,"imagen":"","emoji":"🍗","etiqueta":"mas_vendido","activo":true,"agotado":false},
-  {"id":"c3","categoria":"pizzas","nombre":"Combo Pizza Duo","descripcion":"2 pizzas medianas de queso y jamón. (PRODUCTO DE EJEMPLO)","precio":14,"precioAnterior":16,"imagen":"","emoji":"🍕","etiqueta":"nuevo","activo":true,"agotado":false},
-  {"id":"c4","categoria":"bebidas","nombre":"Combo Refresco x6","descripcion":"Seis refrescos fríos de 355 ml. (PRODUCTO DE EJEMPLO)","precio":9,"imagen":"","emoji":"🥤","etiqueta":"","activo":true,"agotado":true},
-  {"id":"c5","categoria":"individuales","nombre":"Combo Perro Caliente","descripcion":"2 perros calientes con papas. (PRODUCTO DE EJEMPLO)","precio":5,"imagen":"","emoji":"🌭","etiqueta":"nuevo","activo":true,"agotado":false}
-]
